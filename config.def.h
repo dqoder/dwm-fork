@@ -80,6 +80,18 @@ static const char *upvol  [] = { "/usr/bin/pactl", "set-sink-volume", "0",    "+
 static const char *downvol[] = { "/usr/bin/pactl", "set-sink-volume", "0",    "-5%", NULL };
 static const char *mutevol[] = { "/usr/bin/pactl", "set-sink-mute"  , "0", "toggle", NULL };
 
+/* media control */
+static const char *playerplaypause[] = {"playerctl", "play-pause", NULL };
+static const char *playernext     [] = {"playerctl", "next", NULL };
+static const char *playerprev     [] = {"playerctl", "previous", NULL };
+static const char *playerstop     [] = {"playerctl", "stop", NULL };
+
+/* screen lock */
+static const char *screenlock[] = { "/usr/bin/xlock", NULL } ;
+
+/* brightness */
+static const char *screenbrightness_up[]   = { "sudo", "/usr/bin/light", "-A", "4", NULL};
+static const char *screenbrightness_down[] = { "sudo", "/usr/bin/light", "-U", "4", NULL};
 
 /* key definitions */
 #define MODKEY Mod4Mask
@@ -100,7 +112,7 @@ static const char *termcmd[]  = { "st", NULL };
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
-	{ MODKEY|ShiftMask,             XK_Return,      spawn,          {.v = termcmd } },
+	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -136,6 +148,15 @@ static Key keys[] = {
 	{ 0,                XF86XK_AudioMute,      spawn,          {.v = mutevol} },
 	{ 0,         XF86XK_AudioLowerVolume,      spawn,          {.v = downvol} },
 	{ 0,         XF86XK_AudioRaiseVolume,      spawn,          {.v = upvol  } },
+	// media
+	{ 0,                XF86XK_AudioPlay,      spawn,          {.v = playerplaypause   } },
+	{ 0,                XF86XK_AudioPrev,      spawn,          {.v = playerprev        } },
+	{ 0,                XF86XK_AudioNext,      spawn,          {.v = playernext        } },
+	{ 0,                XF86XK_AudioStop,      spawn,          {.v = playerstop        } },
+	// screen
+	{ ShiftMask, XF86XK_AudioLowerVolume,      spawn,          {.v = screenbrightness_down } },
+	{ ShiftMask, XF86XK_AudioRaiseVolume,      spawn,          {.v = screenbrightness_up   } },
+	{ ShiftMask,        XF86XK_AudioPlay,      spawn,          {.v = screenlock            } },
 };
 
 /* button definitions */
