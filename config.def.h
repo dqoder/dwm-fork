@@ -2,6 +2,12 @@
 
 #include <X11/XF86keysym.h>
 
+#define COL_GRAY1 "#282a36"
+#define COL_GRAY3 "#96b5b4"
+#define COL_GRAY5 "#44475a"
+#define COL_CYAN  "#00ffff"
+
+
 /* appearance */
 static const unsigned int borderpx  = 1;        /* border pixel of windows */
 static const unsigned int snap      = 32;       /* snap pixel */
@@ -10,12 +16,12 @@ static const int showbar            = 1;        /* 0 means no bar */
 static const int topbar             = 1;        /* 0 means bottom bar */
 static const char *fonts[]          = { "monospace:size=10", "fontawesome:size=12", "Firacode:size=13" };
 static const char dmenufont[]       = "monospace:size=10";
-static const char col_gray1[]       = "#282a36";
+static const char col_gray1[]       = COL_GRAY1;
 static const char col_gray2[]       = "#111111";
-static const char col_gray3[]       = "#96b5b4";
+static const char col_gray3[]       = COL_GRAY3;
 static const char col_gray4[]       = "#d7d7d7";
-static const char col_gray5[]       = "#44475a";
-static const char col_cyan []       = "#00ffff";
+static const char col_gray5[]       = COL_GRAY5;
+static const char col_cyan []       =  COL_CYAN;
 static const char col_white[]       = "#ffffff";
 static const char col_black[]       = "#000000";
 static const char col_lime []       = "#bfff00";
@@ -106,13 +112,27 @@ static const char *screenbrightness_down[] = { "sudo", "/usr/bin/light", "-U", "
 
 /* commands */
 static char dmenumon[2] = "0"; /* component of dmenucmd, manipulated in spawn() */
-static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_cyan, "-sf", col_gray4, NULL };
+static const char *dmenucmd[] = { "dmenu_run", "-m", dmenumon, "-fn", dmenufont, "-nb", col_gray1, "-nf", col_gray3, "-sb", col_gray5, "-sf", col_cyan, NULL };
 static const char *termcmd[]  = { "st", NULL };
+static const char *vim[]  = { "st", "-e", "vim" };
+static const char *filemanager[] = { "st", "-e",  "ranger", NULL };
+static const char *screenshot [] = { "xfce4-screenshooter", NULL };
+static const char *emojiboard [] = { "rofimoji", "-a", "type", NULL };
 
 static Key keys[] = {
 	/* modifier                     key        function        argument */
 	{ MODKEY,                       XK_p,      spawn,          {.v = dmenucmd } },
 	{ MODKEY|ShiftMask,             XK_Return, spawn,          {.v = termcmd } },
+	{ MODKEY,                       XK_w,      spawn,          SHCMD("\
+			case $(echo -e 'firefox\nchromium\nchrome' | dmenu -i -l 5 -p 'browser' -nb '" COL_GRAY1 "' -nf '" COL_GRAY3 "' -sb '" COL_GRAY5 "' -sf '" COL_CYAN "') in \
+				chrome)   google-chrome-stable ;;\
+				firefox)  firefox ;;\
+				chromium) chromium ;;\
+			esac") },
+	{ MODKEY|ShiftMask,             XK_f,      spawn,          {.v = filemanager } },
+	{ MODKEY|ShiftMask,             XK_m,      spawn,          SHCMD("env LD_PRELOAD=/usr/lib/spotify-adblock.so spotify %U") },
+	{ MODKEY|ShiftMask,             XK_v,      spawn,          {.v = vim } },
+	{ MODKEY|ShiftMask,             XK_e,      spawn,          {.v = emojiboard } },
 	{ MODKEY,                       XK_b,      togglebar,      {0} },
 	{ MODKEY,                       XK_j,      focusstack,     {.i = +1 } },
 	{ MODKEY,                       XK_k,      focusstack,     {.i = -1 } },
@@ -123,6 +143,7 @@ static Key keys[] = {
 	{ MODKEY,                       XK_Return, zoom,           {0} },
 	{ MODKEY,                       XK_Tab,    view,           {0} },
 	{ MODKEY|ShiftMask,             XK_c,      killclient,     {0} },
+	{ MODKEY|ShiftMask,             XK_s,      spawn,          {.v = screenshot } },
 	{ MODKEY,                       XK_t,      setlayout,      {.v = &layouts[0]} },
 	{ MODKEY,                       XK_f,      setlayout,      {.v = &layouts[1]} },
 	{ MODKEY,                       XK_m,      setlayout,      {.v = &layouts[2]} },
